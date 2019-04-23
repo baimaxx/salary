@@ -1,0 +1,7 @@
+<config>
+    <context-values>
+    </context-values>
+    <macro-library>
+        <entry namespace="salary" path="src/main/resources/templates/salary.ftl" project="salary" type="file"/>
+    </macro-library>
+</config>
