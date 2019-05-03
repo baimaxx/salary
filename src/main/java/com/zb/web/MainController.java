@@ -26,5 +26,4 @@ public class MainController {
         model.addAllAttributes(service.getSalary(userId, userName, code, period));
         return "salary";
     }
-
 }
