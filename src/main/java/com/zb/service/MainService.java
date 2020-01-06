@@ -60,15 +60,23 @@ public class MainService {
      */
     public Salary getSalaryEntity(String userId, String userName, String code, String period) {
         checkCookies(userId, userName, code);
-
-        // 第一次请求，不带期间参数，默认上月
-        if (StringUtils.isEmpty(period)) {
-            period = DateUtil.dateToStr(LocalDate.now().minusMonths(1), DateUtil.yyyyMM);
-        }
-
         Salary salary = null;
-        if (isValid(period)) {
-            salary = repository.findByBmAndRq(this.userId, period);
+
+        for (int i = 1; i <= 2; i++) {
+            // 第一次请求，不带期间参数，默认上月
+            if (StringUtils.isEmpty(period)) {
+                period = DateUtil.dateToStr(LocalDate.now().minusMonths(i), DateUtil.yyyyMM);
+            }
+            if (isValid(period)) {
+                salary = repository.findByBmAndRq(this.userId, period);
+                if (salary != null) {
+                    break;
+                } else {
+                    period = null;
+                }
+            } else {
+                period = null;
+            }
         }
 
         if (salary == null) {
@@ -147,14 +155,17 @@ public class MainService {
 
         // 早于数据开始日期
         if (periodDate.isBefore(BEGIN_DATE)) {
+            log.warn(period+"不合法，早于数据开始日期");
             return false;
         }
         // 晚于当前月（压一个月工资时，当前月只能查询上个月）
         if (periodDate.isAfter(LocalDate.now().withDayOfMonth(1))) {
+            log.warn(period+"不合法，晚于当前月（压一个月工资时，当前月只能查询上个月）");
             return false;
         }
         // 等于上月 且 小于上个工资日
         if (period.equals(lastMonthStr) && periodDate.isBefore(lastSalaryDay)) {
+            log.warn(period+"不合法，等于上月 且 小于上个工资日："+lastSalaryDay);
             return false;
         }
         return true;

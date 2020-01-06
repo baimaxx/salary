@@ -57,11 +57,11 @@ public class WxService {
             String token = (String) tokenMap.get("access_token");
             saveToken(tokenFromDB, token, (int) tokenMap.get("expires_in"));
 
-            log.info("AccessToken:" + token);
+            log.debug("AccessToken:" + token);
             return token;
         }
 
-        log.info("返回数据库中的 AccessToken:" + tokenFromDB.getAccessToken());
+        log.debug("返回数据库中的 AccessToken:" + tokenFromDB.getAccessToken());
         return tokenFromDB.getAccessToken();
     }
 
@@ -137,7 +137,7 @@ public class WxService {
         returnMap.put("userid",userid);
         returnMap.put("name", (String) map.get("name"));
         returnMap.put("avatar", (String) map.get("avatar"));
-        log.info(returnMap.toString());
+        log.debug(returnMap.toString());
         return returnMap;
     }
 }
